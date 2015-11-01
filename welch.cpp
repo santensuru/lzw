@@ -34,14 +34,26 @@ void print_token(std::vector<char*> *dictionary, char *word) {
 	return;
 }
 
+void print_dictionary(std::vector<char*> *dictionary) {
+	std::cout << "\n\n";
+	
+	for (int i=0; i<(*dictionary).size(); i++) {
+		std::cout << "(" << i + 1 << "," << (*dictionary).at(i) << ") ";
+	}
+	
+	std::cout << '\n';
+	
+	return;
+}
+
 /**
  * COMPRESS
  */
 
 void compress() {
 //	char *alphabet = (char *) "TARAATATAAARAAA";
-//	char *alphabet = (char *) "wabba_wabba_wabba_wabba_woo_woo_woo";
-	char *alphabet = (char *) "SAYA SUKA SAMA SITU SEBAB SITU SUKA SENYUM SAMA SAYA";
+	char *alphabet = (char *) "wabba_wabba_wabba_wabba_woo_woo_woo";
+//	char *alphabet = (char *) "SAYA SUKA SAMA SITU SEBAB SITU SUKA SENYUM SAMA SAYA";
 	
 //	char *init_alpha = (char *) "_abow";
 	
@@ -99,6 +111,8 @@ void compress() {
 			
 		}
 	}
+	
+	print_dictionary(&dictionary);
 	
 	return;
 }
@@ -170,13 +184,15 @@ void decompress() {
 		}
 	}
 	
+	print_dictionary(&dictionary);
+	
 	return;
 }
 
 int main() {
 	compress();
 	
-	std::cout << "\n\n";
+	std::cout << '\n';
 	
 	decompress();
 	

@@ -1,3 +1,11 @@
+/**
+ * LZW
+ *
+ * Author: Djuned Fernando Djusdek
+ *         5112.100.071
+ *         Informatics - ITS
+ */
+ 
 #include <iostream>
 #include <cstring>
 #include <algorithm>

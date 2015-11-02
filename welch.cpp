@@ -11,10 +11,10 @@
 #include <algorithm>
 #include <vector>
 
-#define SYMBOL 64
+#define SYMBOL 16
+#define BASE 4
 
 std::vector<int> token;
-int LENGTH = 0;
 
 bool linear_search(std::vector<char*> *dictionary, char *word) {
 	for (int i=0; i<(*dictionary).size(); i++) {
@@ -90,7 +90,7 @@ void to_base_64(char *ascii, unsigned char *base_64, int *length) {
 		char temp = ascii[i];
 		
 		for (int j=0; j<8; j++) {
-			if (k == 6) {
+			if (k == BASE) {
 				base_64[l] = temp_64;
 				std::cout << (int) base_64[l] + 1 << " ";
 				l++;
@@ -102,7 +102,7 @@ void to_base_64(char *ascii, unsigned char *base_64, int *length) {
 				temp_64 ^= 0x01;
 			}
 			
-			if (k < 5) {
+			if (k < BASE-1) {
 				temp_64 <<= 1;
 			}
 			
@@ -114,7 +114,7 @@ void to_base_64(char *ascii, unsigned char *base_64, int *length) {
 		}
 	}
 	
-	while (k < 5) {
+	while (k < BASE-1) {
 		temp_64 <<= 1;
 		k++;
 	}
@@ -138,9 +138,9 @@ void to_ascii(unsigned char *base_64, char *ascii, int *length) {
 	for (int i=0; i<*length; i++) {
 		unsigned char temp = base_64[i];
 //		std::cout << "temp " << (int)temp + 1 << '\n';
-		temp <<= 2;
+		temp <<= ( 8 - BASE );
 //		std::cout << "temp " << (int)temp << '\n';
-		for (int j=0; j<6; j++) {
+		for (int j=0; j<BASE; j++) {
 			if (k == 8) {
 				ascii[l] = temp_ascii;
 //				std::cout << temp_ascii << " " << ascii[l] << " ";
@@ -189,8 +189,9 @@ void to_ascii(unsigned char *base_64, char *ascii, int *length) {
 
 void compress() {
 //	char *alphabet = (char *) "TARAATATAAARAAA";
-//	char *alphabet = (char *) "wabba_wabba_wabba_wabba_woo_woo_woo";
-	char *alphabet = (char *) "SAYA SUKA SAMA SITU SEBAB SITU SUKA SENYUM SAMA SAYA";
+	char *alphabet = (char *) "wabba_wabba_wabba_wabba_woo_woo_woo";
+//	char *alphabet = (char *) "SAYA SUKA SAMA SITU SEBAB SITU SUKA SENYUM SAMA SAYA";
+//	char *alphabet = (char *) "qwertyuiopasdfghjklzxcvbnm";
 	
 //	char *init_alpha = (char *) "_abow";
 	
@@ -212,10 +213,10 @@ void compress() {
 //		dictionary.push_back(new_word);
 //	}
 	
-	unsigned char *out = new unsigned char[(int) (strlen(alphabet) *8.0 /6 +0.5)];
+	unsigned char *out = new unsigned char[(int) (strlen(alphabet) *8.0 /BASE +0.5)];
 	int length = strlen(alphabet);
 	to_base_64(alphabet, out, &length);
-	LENGTH = length;
+	
 	std::cout << "\n\n";
 	for (int i=0; i<length; i++) {
 		std::cout << (int) out[i] + 1 << " ";

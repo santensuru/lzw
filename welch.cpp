@@ -92,7 +92,7 @@ void to_base_64(char *ascii, unsigned char *base_64, int *length) {
 		for (int j=0; j<8; j++) {
 			if (k == 6) {
 				base_64[l] = temp_64;
-				std::cout << (int) base_64[l] << " ";
+				std::cout << (int) base_64[l] + 1 << " ";
 				l++;
 				k=0;
 				temp_64 = 0x00;
@@ -121,7 +121,7 @@ void to_base_64(char *ascii, unsigned char *base_64, int *length) {
 	base_64[l] = temp_64;
 	
 //	std::cout << " " << k << '\n';
-	std::cout << (int) base_64[l] << " ";
+	std::cout << (int) base_64[l] + 1 << " ";
 	
 	*length = ++l;
 	
@@ -137,11 +137,13 @@ void to_ascii(unsigned char *base_64, char *ascii, int *length) {
 	char temp_ascii = 0x00;
 	for (int i=0; i<*length; i++) {
 		unsigned char temp = base_64[i];
-		
+//		std::cout << "temp " << (int)temp + 1 << '\n';
+		temp <<= 2;
+//		std::cout << "temp " << (int)temp << '\n';
 		for (int j=0; j<6; j++) {
 			if (k == 8) {
 				ascii[l] = temp_ascii;
-				std::cout << (int) ascii[l] << " ";
+//				std::cout << temp_ascii << " " << ascii[l] << " ";
 				l++;
 				k=0;
 				temp_ascii = 0x00;
@@ -159,6 +161,7 @@ void to_ascii(unsigned char *base_64, char *ascii, int *length) {
 			
 			temp <<= 1;
 			
+//			std::cout << (int) temp_ascii << " ";
 //			std::cout << i << " " << k << '\n';
 		}
 	}
@@ -167,11 +170,12 @@ void to_ascii(unsigned char *base_64, char *ascii, int *length) {
 		temp_ascii <<= 1;
 		k++;
 	}
-	ascii[l] = temp_ascii;
+	ascii[l++] = temp_ascii;
 	
 //	std::cout << " " << k << '\n';
-	std::cout << (int) ascii[l] << " ";
+//	std::cout << ascii[l] << " ";
 	
+	ascii[l] = '\0';
 	*length = ++l;
 	
 //	std::cout << l << " " << (int) (strlen(input) *8.0 /6 +0.5);
@@ -185,8 +189,8 @@ void to_ascii(unsigned char *base_64, char *ascii, int *length) {
 
 void compress() {
 //	char *alphabet = (char *) "TARAATATAAARAAA";
-	char *alphabet = (char *) "wabba_wabba_wabba_wabba_woo_woo_woo";
-//	char *alphabet = (char *) "SAYA SUKA SAMA SITU SEBAB SITU SUKA SENYUM SAMA SAYA";
+//	char *alphabet = (char *) "wabba_wabba_wabba_wabba_woo_woo_woo";
+	char *alphabet = (char *) "SAYA SUKA SAMA SITU SEBAB SITU SUKA SENYUM SAMA SAYA";
 	
 //	char *init_alpha = (char *) "_abow";
 	
@@ -214,7 +218,7 @@ void compress() {
 	LENGTH = length;
 	std::cout << "\n\n";
 	for (int i=0; i<length; i++) {
-		std::cout << (int) out[i] << " ";
+		std::cout << (int) out[i] + 1 << " ";
 	}
 	std::cout << "\n\n";
 	
@@ -299,9 +303,14 @@ void decompress() {
 	
 	std::cout << '\n';
 	
+	unsigned char result[512];
+	memset(result, 0, 512);
+	int l=0;
+	
 //	for (int i=0; i<sizeof(token)/4; i++) {
 	for (int i=0; i<token.size(); i++) {
 		strcpy(character, dictionary.at(token[i] - 1));
+		strcat(character, "");
 		
 		char *temp = new char[strlen(word)];
 		
@@ -322,16 +331,26 @@ void decompress() {
 			dictionary.push_back(new_word);
 			strcpy(word, character);
 			std::cout << character;
+			memcpy(result + l, character, strlen(character));
+			l += strlen(character);
 			
 		} else {
 			if (i == 0) {
 				std::cout << character;
+				memcpy(result + l, character, strlen(character));
+				l += strlen(character);
 			}
 			
 		}
 	}
 	
 	print_dictionary(&dictionary);
+	
+	char oke_char[512];
+	
+	to_ascii(result, oke_char, &l);
+	
+	std::cout << "\n\n" << oke_char << " ";
 	
 	return;
 }
